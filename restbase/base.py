@@ -89,12 +89,12 @@ class BaseConnector:
         """Return the logger instance to be used for logging."""
         return logging.getLogger(__name__)
 
-    def make_request(self, url, method, params=None):
+    def make_request(self, url, method, reqdata=None):
         """Make a request to a passed URL.
 
         :param url: The URL to send the request to.
         :param method: The method to use. Should be GET or POST.
-        :param params: The parameters passed by the client.
+        :param reqdata: The parameters passed by the client.
                        Should only be used when doing a POST request
         :raise ValueError: If an incorrect `method` is passed.
         :raise TimeoutError: If a request timeout occurred.
@@ -108,8 +108,11 @@ class BaseConnector:
         # Set default values for the request args and kwargs.
         reqkwargs = {"timeout": self.timeout}
 
+        # Pre process the data
+        reqdata = self.pre_process_request_data(method, reqdata)
+
         # Encode the data
-        reqkwargs["data"] = self.encode_data(method, params)
+        reqkwargs["data"] = self.encode_data(method, reqdata)
 
         # Pre process the request data.
         reqkwargs = self.pre_process_request(method, url, reqkwargs)
@@ -157,6 +160,16 @@ class BaseConnector:
         session = Session()
         session.headers = self.headers
         return session
+
+    def pre_process_request_data(self, method, reqdata):
+        """
+
+        :param method: The method to use in the request. Can not be modified.
+        :param reqdata: The request data to send in the request. This has
+            not yet been encoded.
+        :return: The request data to use in the request.
+        """
+        return reqdata
 
     def pre_process_request(self, method, url, reqkwargs):
         """Pre process the request and return the keyword argumets for
