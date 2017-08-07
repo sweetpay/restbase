@@ -8,7 +8,7 @@ from requests import Session
 
 
 class RESTBaseException(Exception):
-    def __init__(self, msg, data=None, code=None, response=None, exc=None):
+    def __init__(self, msg=None, data=None, code=None, response=None, exc=None):
         super().__init__(msg)
         self.data = data
         self.code = code
