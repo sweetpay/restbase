@@ -338,10 +338,10 @@ class BaseClient:
         """
         try:
             return cls.RESOURCE_MAPPER[(namespace, version)]
-        except KeyError:
+        except KeyError as e:
             raise ValueError(
                 "No resource with the namespace={0} and "
-                "version={1}".format(namespace, version))
+                "version={1}".format(namespace, version)) from e
 
     def _get_resource_arguments(self):
         """Retrieve the arguments to pass to the connector."""
