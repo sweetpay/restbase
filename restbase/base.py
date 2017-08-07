@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from requests import Session
 
 
-class ApiBaseException(Exception):
+class RESTBaseException(Exception):
     def __init__(self, msg, data=None, code=None, response=None, exc=None):
         super().__init__(msg)
         self.data = data
@@ -45,20 +45,18 @@ class ResponseClass:
 class BaseConnector:
     """The base class used to create API clients."""
 
-    def __init__(self, api_token, test, timeout):
+    def __init__(self, test, timeout):
         """Initialize the checkout client used to talk to the checkout API.
 
-        :param api_token: Same as `BaseClient`.
         :param test: Same as `BaseClient`.
         :param timeout: Same as `BaseClient`.
         """
-        self.api_token = api_token
         self.test = test
         self.timeout = timeout
         self.logger = self.get_logger()
 
         # It is important to call this last, since the headers may
-        # depend on instance attributes such as `api_token`.
+        # depend on instance attributes.
         self.headers = self.create_headers()
 
     def create_headers(self):
@@ -298,10 +296,9 @@ class BaseClient:
     DEFAULT_TIMEOUT = 15
 
     def __init__(
-            self, api_token, test, version, timeout=None, connector=None):
+            self, test, version, timeout=None, connector=None):
         """Configure the API with default values.
 
-        :param api_token: The API token to the API.
         :param test: A boolean indicating whether to use the test
             or production environment.
         :param version: A dictionary indicating which versions of
@@ -310,7 +307,6 @@ class BaseClient:
         :param connector: Optional. The connector to use for contacting the
             API. Defaults to `self.DEFAULT_CONNECTOR`.
         """
-        self.api_token = api_token
         self.test = test
         self.version = version
         self.timeout = timeout or self.DEFAULT_TIMEOUT
@@ -346,8 +342,8 @@ class BaseClient:
     def _get_resource_arguments(self):
         """Retrieve the arguments to pass to the connector."""
         return {
-            "api_token": self.api_token, "test": self.test,
-            "timeout": self.timeout, "connector": self.connector
+            "test": self.test, "timeout": self.timeout,
+            "connector": self.connector
         }
 
 
