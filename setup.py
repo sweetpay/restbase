@@ -14,5 +14,5 @@ setup(
     download_url="https://github.com/sweetpay/restbase/"
                  "tarball/%s" % __version__,
     packages=["restbase"],
-    install_requires=["requests>2.0"]
+    install_requires=["requests>=2.0"]
 )
